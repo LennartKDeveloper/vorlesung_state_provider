@@ -30,28 +30,30 @@ class HomePage extends StatelessWidget {
     return randomWords[random.nextInt(randomWords.length)];
   }
 
-  void _showListDialog(BuildContext context, List<String> items) {
+  void _showListDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text("Warenkorb Inhalt"),
           content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Text(
-                    "- ${items[index]}",
-                    style: const TextStyle(fontSize: 16),
-                  ),
+              width: double.maxFinite,
+              child:
+                  Consumer<ItemCardProvider>(builder: (context, data, child) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: data.items.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        "- ${data.items[index]}",
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    );
+                  },
                 );
-              },
-            ),
-          ),
+              })),
           actions: [
             TextButton(
               onPressed: () {
@@ -84,15 +86,16 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
+                // Consumer stellt automatisch aktualisierte version unserer itemslist da.
                 child: Consumer<ItemCardProvider>(
-                  builder: (context, cartProvider, child) {
+                  builder: (context, data, child) {
                     return ListView.builder(
-                      itemCount: cartProvider.items.length,
+                      itemCount: data.items.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(cartProvider.items[index]),
+                          title: Text(data.items[index]),
                           onTap: () {
-                            _showListDialog(context, cartProvider.items);
+                            _showListDialog(context);
                           },
                         );
                       },
